@@ -1,4 +1,5 @@
 import json
+import datetime
 from easygui import *
 
 fileName = 'notebook.json'
@@ -7,9 +8,9 @@ def load():
     with open(fileName,"r",encoding="utf-8") as fh:
         return json.load(fh)
     
-def save(phones):
+def save(notes):
     with open(fileName, 'w', encoding='utf-8') as fh:
-        fh.write(json.dumps(phones, ensure_ascii = False))
+        fh.write(json.dumps(notes, ensure_ascii = False))
     print('Заметки успешно coxpanenы в файле %s' %fileName)
 
 def printHelp():
@@ -18,52 +19,48 @@ def printHelp():
     2 - Редактировать заметку по номеру записи
     3 - Удалить заметку по номеру записи
     4 - Показать заметку по номеру записи
-    4 - Показать список заметок
-    5 - Поиск по дате
+    5 - Показать список заметок
+    6 - Поиск по дате
     0 - ВЫХОД'''
     return strHelp
 
-def isPhoneExist(phones, phoneFind):
-    for phone in phones:
-        for value in phone.values():
-            if phoneFind in value:
+def isNoteExist(notes, noteFind):
+    for note in notes:
+        for value in note.values():
+            if noteFind in value:
                 return True
     return False
 
-def findContacts(phones, cmd):
+def findNotes(notes, cmd):
     strHelp = 'Введите '
-    if cmd == 1:
-        strHelp += 'имя контакта: '
-    elif cmd == 2:
-        strHelp += 'фамилию контакта: '
-    else:
-        strHelp += 'номер телефона: '
+    if cmd == 6:
+        strHelp += 'дату заметки: '
     text = input(strHelp).upper()
 
     result = []
-    for contact in phones:
+    for note in notes:
         isExists = False
-        for key, value in contact.items():
-            if key != 'phones' and text in value.upper():
-                if cmd == 1 and key == 'firstName' or cmd == 2 and key == 'lastName':
+        for key, value in note.items():
+            if key != 'notes' and text in value.upper():
+                if cmd == 6 and key == 'dataNote':
                     isExists = True
             
-            if not isExists and cmd not in range(1, 3) and key == 'phones':
-                isExists = isPhoneExist(contact['phones'], text)
+            if not isExists and cmd not in range(1, 3) and key == 'notes':
+                isExists = isNoteExist(note['notes'], text)
 
         if isExists:
-            result.append(contact)
+            result.append(note)
 
     return result
 
-def printContacts(phones, numberC = 0):
+def printNotes(notes, numberN = 0):
     num = 1
     rezret = []
-    if numberC == 0:
-        for contact in phones:
+    if numberN == 0:
+        for note in notes:
             result = ''
             result += str(num) + " "
-            for value in contact.values():
+            for value in note.values():
                 if type(value) is list:
                     for znach in value:
                         for value1 in znach.values():
@@ -74,8 +71,8 @@ def printContacts(phones, numberC = 0):
             num += 1
     else: 
         result = ''
-        contact = phones[numberC - 1]
-        for value in contact.values():
+        contact = notes[numberN - 1]
+        for value in note.values():
             if type(value) is list:
                 for znach in value:
                     for value1 in znach.values():
@@ -85,81 +82,46 @@ def printContacts(phones, numberC = 0):
         rezret.append(result)
     return rezret
 
-def addContact(phones):
-    # {"lastName": "Иванов", "firstName": "Иван", "surName": "Иванович", "phones": [{"title": "Основной", "number": "79011234567"}, {"title": "Домашний", "number": "79991234567"}]} 
-    print('Введите данные нового контакта: ')
-    human = {}
-    human["lastName"] = input("Введите фамилию ")
-    human["firstName"] = input("Введите имя ")
-    human["sureName"] = input("Введите отчество ")
-    print ('Введите телефоны контакта ')
-    phonesH = []
-    
-    while True:
-        phoneZapis = {}
-        typePhone = input("Введите тип номера телефона ")
-        phoneN = input("Введите номер телефона ")
-        if phoneN == '':
-            break
-        else:
-            phoneZapis["title"] = typePhone
-            phoneZapis["number"] = phoneN
-            phonesH.append(phoneZapis)
-    
-    human["phones"] = phonesH
+def addNote(notes):
+    print('Введите данные новой заметки: ')
+    note = {}
+    note["header"] = input("Введите заголовок заметки ")
+    note["body"] = input("Введите текст заметки ")
+    today = datetime.datetime.today()
+    note["dataNote"] = today.strftime("%m.%d.%Y")
+    note["timeNote"] = today.strftime("%H.%M.%S")
 
-    phones.append(human)
+    notes.append(note)
 
-def delContact(phones):
-    printContacts(phones)
+def delNote(notes):
+    printNotes(notes)
     try:
         numberDel = int(input('Введите номер записи для удаления из справочника '))
-        del phones[numberDel - 1]
+        del notes[numberDel - 1]
     except:
         print('Введен недопустимый параметр!')
 
-def editContact(phones):
+def editNote(notes):
     try:
         numberEdit = int(input('Введите номер записи для редактирования '))
-        human = phones[numberEdit - 1]
-        printContacts(phones, numberEdit)
-        lastName = input("Введите новую фамилию. Если менять не нужно нажмите 'Enter' ")
-        if lastName == '':
-            print ("Фамилия без изменений")
+        note = notes[numberEdit - 1]
+        printNotes(notes, numberEdit)
+        header = input("Введите новый загловок. Если менять не нужно нажмите 'Enter' ")
+        if header == '':
+            print ("Заголовок без изменений")
         else:
-            human["lastName"] = lastName
+            note["header"] = header
 
-        firstName = input("Введите новое имя. Если менять не нужно нажмите 'Enter' ")
-        if firstName == '':
-            print ("Имя без изменений")
+        body = input("Введите новый текст. Если менять не нужно нажмите 'Enter' ")
+        if body == '':
+            print ("Текст без изменений")
         else:
-            human["firstName"] = firstName
+            note["body"] = body
 
-        sureName = input("Введите новое отчество. Если менять не нужно нажмите 'Enter' ")
-        if sureName == '':
-            print ("Отчество без изменений")
-        else:
-            human["sureName"] = sureName
-                
-        for phoneZapis in human["phones"]:
-            print(phoneZapis['title'], phoneZapis['number'])
-            typePhone = input("Введите тип номера телефона. Если менять не нужно нажмите 'Enter' ")
-            if typePhone == '':
-                print ("Тип номера без изменений")
-            else:
-                phoneZapis["title"] = typePhone
-
-            phoneN = input("Введите номер телефона. Если менять не нужно нажмите 'Enter' ")
-            if phoneN == '':
-                print ("Номер без изменений")
-            else:
-                phoneZapis["number"] = phoneN
+        today = datetime.datetime.today()
+        note["dataNote"] = today.strftime("%m.%d.%Y")
+        note["timeNote"] = today.strftime("%H.%M.%S")
                 
     except:
         print('Введен недопустимый параметр!')
-
-# def vvod():
-#     msg = printHelp()
-#     title = "Выбор команды" #Шапочка.
-#     return integerbox(msg, title, default=None, lowerbound=0, upperbound=7, image=None, root=None)
     

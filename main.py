@@ -8,32 +8,41 @@
 # (команда, данные), можно делать как запрос команды с консоли и
 # последующим вводом данных, как-то ещё, на усмотрение студента.
 
+# Критерии оценки
+# Приложение должно запускаться без ошибок, должно уметь сохранять данные
+# в файл, уметь читать данные из файла, делать выборку по дате, выводить на
+# экран выбранную запись, выводить на экран весь список записок, добавлять
+# записку, редактировать ее и удалять.
+
 import functions as f
 
 def procCommand(cmd):
     if cmd == 0:
-        f.save(phones)
+        f.save(notes)
         return False
-    elif cmd in range(1, 4):
-        rezFind = f.findContacts(phones, cmd)
-        print ('Найденные контакты:')
-        for zap in rezFind:
-            print(*f.printContacts(phones, phones.index(zap) + 1))
-    elif cmd == 4:
-        f.addContact(phones)
-    elif cmd == 5:
-        print("\n".join(f.printContacts(phones)))
-        f.editContact(phones)
     elif cmd == 6:
-        print("\n".join(f.printContacts(phones)))
-        f.delContact(phones)
-    elif cmd == 7:
-        print("\n".join(f.printContacts(phones)))
+        rezFind = f.findNotes(notes, cmd)
+        print ('Найденные записки:')
+        for zap in rezFind:
+            print(*f.printNotes(notes, notes.index(zap) + 1))
+    elif cmd == 1:
+        f.addNote(notes)
+    elif cmd == 2:
+        print("\n".join(f.printNotes(notes)))
+        f.editNote(notes)
+    elif cmd == 3:
+        print("\n".join(f.printNotes(notes)))
+        f.delNote(notes)
+    elif cmd == 4:
+        print("\n".join(f.printNotes(notes)))
+        f.printOneNote(notes)
+    elif cmd == 5:
+        print("\n".join(f.printNotes(notes)))
     else:
         print ('Неизвестна команда')
     return True
 
-phones = f.load()
+notes = f.load()
 print(f.printHelp())
 
 while True:
@@ -42,4 +51,4 @@ while True:
         if not procCommand(inputCommand):
             break
     except ValueError:
-        print('Неизвестная')
+        print('Вы ввели неизвестную команду')

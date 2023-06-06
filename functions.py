@@ -62,49 +62,50 @@ def printNotes(notes, numberN = 0):
             result = ''
             result += str(num) + " "
             for value in note.values():
-                if type(value) is list:
-                    for znach in value:
-                        for value1 in znach.values():
-                            result += str(value1) + ' '
-                else:
-                    result += str(value) + ' '
+                result += str(value) + ' '
             rezret.append(result)
             num += 1
     else: 
         result = ''
         note = notes[numberN - 1]
         for value in note.values():
-            if type(value) is list:
-                for znach in value:
-                    for value1 in znach.values():
-                        result += str(value1) + ' '
-            else:
-                result += str(value) + ' '
+            result += str(value) + ' '
         rezret.append(result)
     return rezret
+
+def printOneNote(notes):
+    printNotes(notes)
+    try:
+        numberShow = int(input('Введите номер записи для вывода на экран: '))
+        note = notes[numberShow - 1]
+        print("\nВремя заметки: %s" %note["timeNote"])
+        print("Дата заметки: %s" %note["dataNote"])
+        print("Заголовок заметки: %s" %note["header"])
+        print("Текст заметки: %s" %note["body"])
+    except:
+        print('Введен недопустимый параметр!')
 
 def addNote(notes):
     print('Введите данные новой заметки: ')
     note = {}
-    note["header"] = input("Введите заголовок заметки ")
-    note["body"] = input("Введите текст заметки ")
+    note["header"] = input("Введите заголовок заметки: ")
+    note["body"] = input("Введите текст заметки: ")
     today = datetime.datetime.today()
     note["dataNote"] = today.strftime("%m.%d.%Y")
     note["timeNote"] = today.strftime("%H:%M:%S")
-    print(note)
     notes.append(note)
 
 def delNote(notes):
     printNotes(notes)
     try:
-        numberDel = int(input('Введите номер записи для удаления из справочника '))
+        numberDel = int(input('Введите номер записи для удаления из справочника: '))
         del notes[numberDel - 1]
     except:
         print('Введен недопустимый параметр!')
 
 def editNote(notes):
     try:
-        numberEdit = int(input('Введите номер записи для редактирования '))
+        numberEdit = int(input('Введите номер записи для редактирования: '))
         note = notes[numberEdit - 1]
         printNotes(notes, numberEdit)
         header = input("Введите новый загловок. Если менять не нужно нажмите 'Enter' ")

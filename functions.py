@@ -1,18 +1,24 @@
 import json
+import os.path
 import datetime
 from easygui import *
 
 fileName = "notebook.json"
 
 def load():
-    with open(fileName,"r",encoding="utf-8") as fh:
-        text = json.loads(fh.read())
-        return text
+    if os.path.isfile(fileName):
+        with open(fileName,"r",encoding="utf-8") as fh:
+            text = json.loads(fh.read())
+    else:
+        with open(fileName, 'a', encoding='utf-8') as fh:
+            fh.write(json.dumps([], ensure_ascii = False))
+            text = []
+    return text
     
 def save(notes):
     with open(fileName, 'w', encoding='utf-8') as fh:
         fh.write(json.dumps(notes, ensure_ascii = False))
-    print('Заметки успешно coxpanenы в файле %s' %fileName)
+    print('Заметки успешно coxpaнeны в файле %s' %fileName)
 
 def printHelp():
     strHelp = '''\nКоманды заметок:
@@ -22,7 +28,7 @@ def printHelp():
     4 - Показать заметку по номеру записи
     5 - Показать список заметок
     6 - Поиск по дате
-    0 - ВЫХОД'''
+    0 - Сохранить и выйти'''
     return strHelp
 
 def findNotes(notes):

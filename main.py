@@ -21,7 +21,7 @@ def procCommand(cmd):
         f.save(notes)
         return False
     elif cmd == 6:
-        rezFind = f.findNotes(notes, cmd)
+        rezFind = f.findNotes(notes)
         print ('Найденные записки:')
         for zap in rezFind:
             print(*f.printNotes(notes, notes.index(zap) + 1))

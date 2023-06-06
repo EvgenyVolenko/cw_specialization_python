@@ -25,31 +25,12 @@ def printHelp():
     0 - ВЫХОД'''
     return strHelp
 
-def isNoteExist(notes, noteFind):
-    for note in notes:
-        for value in note.values():
-            if noteFind in value:
-                return True
-    return False
-
-def findNotes(notes, cmd):
-    strHelp = 'Введите '
-    if cmd == 6:
-        strHelp += 'дату заметки: '
-    text = input(strHelp).upper()
-
+def findNotes(notes):
+    text = input('Введите дату заметки в формате ДД.ММ.ГГГГ: ')
+    
     result = []
     for note in notes:
-        isExists = False
-        for key, value in note.items():
-            if key != 'notes' and text in value.upper():
-                if cmd == 6 and key == 'dataNote':
-                    isExists = True
-            
-            if not isExists and cmd not in range(1, 3) and key == 'notes':
-                isExists = isNoteExist(note['notes'], text)
-
-        if isExists:
+        if note['dataNote'] == text:
             result.append(note)
 
     return result

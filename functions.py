@@ -2,11 +2,12 @@ import json
 import datetime
 from easygui import *
 
-fileName = 'notebook.json'
+fileName = "notebook.json"
 
 def load():
     with open(fileName,"r",encoding="utf-8") as fh:
-        return json.load(fh)
+        text = json.loads(fh.read())
+        return text
     
 def save(notes):
     with open(fileName, 'w', encoding='utf-8') as fh:
@@ -71,7 +72,7 @@ def printNotes(notes, numberN = 0):
             num += 1
     else: 
         result = ''
-        contact = notes[numberN - 1]
+        note = notes[numberN - 1]
         for value in note.values():
             if type(value) is list:
                 for znach in value:
@@ -89,8 +90,8 @@ def addNote(notes):
     note["body"] = input("Введите текст заметки ")
     today = datetime.datetime.today()
     note["dataNote"] = today.strftime("%m.%d.%Y")
-    note["timeNote"] = today.strftime("%H.%M.%S")
-
+    note["timeNote"] = today.strftime("%H:%M:%S")
+    print(note)
     notes.append(note)
 
 def delNote(notes):
@@ -120,7 +121,7 @@ def editNote(notes):
 
         today = datetime.datetime.today()
         note["dataNote"] = today.strftime("%m.%d.%Y")
-        note["timeNote"] = today.strftime("%H.%M.%S")
+        note["timeNote"] = today.strftime("%H:%M:%S")
                 
     except:
         print('Введен недопустимый параметр!')

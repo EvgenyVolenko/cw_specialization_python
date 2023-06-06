@@ -43,10 +43,10 @@ def procCommand(cmd):
     return True
 
 notes = f.load()
-print(f.printHelp())
 
 while True:
     try:
+        print(f.printHelp())
         inputCommand = int(input('Введите номер команды: '))
         if not procCommand(inputCommand):
             break
